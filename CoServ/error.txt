@@ -1,0 +1,72 @@
+SELECT result.Vendor,result.Progress_Type,result.Date_Type,result.Date
+from
+(
+SELECT A.Vendor,'Access' AS Progress_Type,temp.col_nm AS Date_Type,
+	CASE WHEN temp.val=1 THEN A.Baseline
+	     WHEN temp.val=2 THEN A.[Critical Path]
+	     WHEN temp.val=3 THEN A.Complete
+         WHEN temp.val=4 THEN A.Remaining
+	END AS Date
+FROM [Access] A
+CROSS JOIN 
+(
+SELECT 1 AS val,'Baseline'  AS col_nm UNION all
+SELECT 2 AS val,'Critical Path' AS col_nm  UNION ALL
+SELECT 3 AS val, 'Complete'  AS col_nm UNION ALL
+SELECT 4 AS val, 'Remaining' ) AS temp
+WHERE A.Vendor IS NOT null
+
+UNION 
+
+SELECT C.Vendor,'Clearing' AS Progress_Type,temp.col_nm AS Date_Type,
+	CASE WHEN temp.val=1 THEN C.Baseline
+	     WHEN temp.val=2 THEN C.[Critical Path]
+	     WHEN temp.val=3 THEN C.Complete
+         WHEN temp.val=4 THEN C.Remaining
+	END AS Date
+FROM [Clearing] C
+CROSS JOIN 
+(
+SELECT 1 AS val,'Baseline'  AS col_nm UNION all
+SELECT 2 AS val,'Critical Path' AS col_nm  UNION ALL
+SELECT 3 AS val, 'Complete'  AS col_nm UNION ALL
+SELECT 4 AS val, 'Remaining' ) AS temp
+WHERE C.Vendor IS NOT null
+
+union
+
+SELECT F.Vendor,'Foundation' AS Progress_Type,temp.col_nm AS Date_Type,
+	CASE WHEN temp.val=1 THEN F.Baseline
+	     WHEN temp.val=2 THEN F.[Critical Path]
+	     WHEN temp.val=3 THEN F.Complete
+         WHEN temp.val=4 THEN F.Remaining
+	END AS Date
+FROM [Foundation] F
+CROSS JOIN 
+(
+SELECT 1 AS val,'Baseline'  AS col_nm UNION all
+SELECT 2 AS val,'Critical Path' AS col_nm  UNION ALL
+SELECT 3 AS val, 'Complete'  AS col_nm UNION ALL
+SELECT 4 AS val, 'Remaining' ) AS temp
+WHERE F.Vendor IS NOT null
+
+UNION 
+
+
+SELECT P.Vendor,'Wire Pull' AS Progress_Type,temp.col_nm AS Date_Type,
+	CASE WHEN temp.val=1 THEN P.Baseline
+	     WHEN temp.val=2 THEN P.[Critical Path]
+	     WHEN temp.val=3 THEN P.Complete
+         WHEN temp.val=4 THEN P.Remaining
+	END AS Date
+FROM [Wire Pull] P
+CROSS JOIN 
+(
+SELECT 1 AS val,'Baseline'  AS col_nm UNION all
+SELECT 2 AS val,'Critical Path' AS col_nm  UNION ALL
+SELECT 3 AS val, 'Complete'  AS col_nm UNION ALL
+SELECT 4 AS val, 'Remaining' ) AS temp
+WHERE P.Vendor IS NOT null
+
+) AS result
+ORDER BY result.Vendor,result.Progress_Type
